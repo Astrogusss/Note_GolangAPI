@@ -8,6 +8,7 @@ import (
 func NoteList (w http.ResponseWriter, r *http.Request){
 	//se fizer alguma rota inesperada
 	if r.URL.Path != "/"{
+		//jeito mais facil do que http.error
 		http.NotFound(w, r)
 		return
 	}
@@ -19,8 +20,7 @@ func NoteList (w http.ResponseWriter, r *http.Request){
 	}
 
 	//listando os templates para serem retornados
-	var files []string
-	files = []string{"views/templates/base.html", "views/templates/pages/NoteList.html"}
+	files := []string{"views/templates/base.html", "views/templates/pages/NoteList.html"} 
 
 	t, err := template.ParseFiles(files ...)
 	if err != nil {
@@ -60,8 +60,7 @@ func NoteView (w http.ResponseWriter, r *http.Request){
 		return
 	}
 
-	var files []string
-	files = []string{"views/templates/base.html", "views/templates/pages/NoteView.html"}
+	files := []string{"views/templates/base.html", "views/templates/pages/NoteView.html"}
 
 	t, err := template.ParseFiles(files ...)
 	if err != nil {
@@ -78,8 +77,7 @@ func NoteNew (w http.ResponseWriter, r *http.Request){
 		return
 	}
 	
-	var files []string
-	files = []string{"views/templates/base.html", "views/templates/pages/NoteNew.html"}
+	files := []string{"views/templates/base.html", "views/templates/pages/NoteNew.html"}
 
 	t, err := template.ParseFiles(files ...)
 	if err != nil {
@@ -97,8 +95,7 @@ func NoteCreate (w http.ResponseWriter, r *http.Request){
 		return
 	}
 
-	var files []string
-	files = []string{"views/templates/base.html", "views/templates/pages/NoteCreate.html"}
+	files := []string{"views/templates/base.html", "views/templates/pages/NoteCreate.html"}
 
 	t, err := template.ParseFiles(files ...)
 	if err != nil {
@@ -112,6 +109,13 @@ func NoteCreate (w http.ResponseWriter, r *http.Request){
 
 func main(){
 	mux := http.NewServeMux()
+	//precisamos de um handler que sirva arquivos estáticos, assim como fazemos com html (pode ser feito com js, css, etc)
+
+	// aqui estamos dizendo que todos os arquivos que estao em views/static serão servidos
+	staticHandler := http.FileServer(http.Dir("views/static/"))
+
+	mux.Handle("/static/", http.StripPrefix("/static/", staticHandler))
+	//cuidado que tem que link o css tambem no html
 
 	mux.HandleFunc("/", NoteList)
 	mux.HandleFunc("/note/view", NoteView)

@@ -1,8 +1,9 @@
 package main
 
 import (
-	"net/http"
+	"fmt"
 	"html/template"
+	"net/http"
 )
 
 func NoteList (w http.ResponseWriter, r *http.Request){
@@ -108,9 +109,11 @@ func NoteCreate (w http.ResponseWriter, r *http.Request){
 }
 
 func main(){
+	//carregar as variaveis globais
+	config := LoadConfig()
+
 	mux := http.NewServeMux()
 	//precisamos de um handler que sirva arquivos estáticos, assim como fazemos com html (pode ser feito com js, css, etc)
-
 	// aqui estamos dizendo que todos os arquivos que estao em views/static serão servidos
 	staticHandler := http.FileServer(http.Dir("views/static/"))
 
@@ -122,5 +125,5 @@ func main(){
 	mux.HandleFunc("/note/new", NoteNew)
 	mux.HandleFunc("/note/create", NoteCreate)
 	
-	http.ListenAndServe(":5000", mux)
+	http.ListenAndServe(fmt.Sprintf(":%s", config.Server_Port), mux)
 }

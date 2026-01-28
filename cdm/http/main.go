@@ -3,7 +3,9 @@ package main
 import (
 	"fmt"
 	"html/template"
+	"log/slog"
 	"net/http"
+	"os"
 )
 
 func NoteList (w http.ResponseWriter, r *http.Request){
@@ -111,6 +113,10 @@ func NoteCreate (w http.ResponseWriter, r *http.Request){
 func main(){
 	//carregar as variaveis globais
 	config := LoadConfig()
+
+	//criacao do logger
+	logger := NewLogger(os.Stdout, slog.LevelDebug)
+	logger.Info("Posta", "ServerPort:", config.Server_Port)
 
 	mux := http.NewServeMux()
 	//precisamos de um handler que sirva arquivos estáticos, assim como fazemos com html (pode ser feito com js, css, etc)

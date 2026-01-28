@@ -1,6 +1,8 @@
 package main
 
 import (
+	"io"
+	"log/slog"
 	"os"
 
 	"github.com/joho/godotenv"
@@ -23,4 +25,11 @@ func LoadConfig() *Config {
 	}
 
 	return &config
+}
+
+func NewLogger(out io.Writer, minLevel slog.Level) *slog.Logger{
+	return slog.New(slog.NewJSONHandler(out, &slog.HandlerOptions{
+		AddSource: true,
+		Level: minLevel,
+	}))
 }
